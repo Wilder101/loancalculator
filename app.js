@@ -1,16 +1,28 @@
 // Listen for submit
-document.getElementById("loan-form").addEventListener("submit", calculateResults);
+// document.getElementById("loan-form").addEventListener("submit", calculateResults);
+document.getElementById("loan-form").addEventListener("submit", function(e){
+
+    // Hide results
+    document.getElementById("results").style.display = "none";
+    
+    // Show loading
+    document.getElementById("loading").style.display = "block";
+
+    // Prevent page reload
+    e.preventDefault();
+
+    // Show loading image for 2 seconds
+    setTimeout(calculateResults, 2000);
+});
 
 // Calculate Results
-function calculateResults(e) {
-
-    // 
-    console.log("Calculating...");
+function calculateResults() {
 
     // UI vars
     const amount = document.getElementById("amount");
     const interest = document.getElementById("interest");
     const years = document.getElementById("years");
+
     const monthlyPayment = document.getElementById("monthly-payment");
     const totalPayment = document.getElementById("total-payment");
     const totalInterest = document.getElementById("total-interest");
@@ -23,21 +35,31 @@ function calculateResults(e) {
     const x = Math.pow(1 + calculatedInterest, calculatedPayments);
     const monthly = (principal * x * calculatedInterest) / (x - 1);
 
+    // Error check and calculate
     if(isFinite(monthly)) {
         monthlyPayment.value = monthly.toFixed(2);
         totalPayment.value = (monthly * calculatedPayments).toFixed(2);
         totalInterest.value = ((monthly * calculatedPayments)- principal).toFixed(2);
+
+        // Show results
+        document.getElementById("results").style.display = "block";
+
+        // Hide loading
+        document.getElementById("loading").style.display = "none";
+
     } else {
-        console.log("Please check input numbers");
         showError("Please check your numbers");
     }
-
-    // Prevent page reload
-    e.preventDefault();
 }
 
 // Show error message
 function showError(error) {
+
+    // Hide results
+    document.getElementById("results").style.display = "none";
+
+    // Hide loading
+    document.getElementById("loading").style.display = "none";
 
     // Get elements
     const card = document.querySelector(".card");
@@ -57,7 +79,6 @@ function showError(error) {
 
     // Clear error after 5 seconds
     setTimeout(clearError, 5000);
-
 }
 
 // Clear error
